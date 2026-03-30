@@ -1,4 +1,4 @@
-# Géovibration 📱
+# GeoVibe 📱
 
 Application de recherche d'établissements de boissons et de bouches par style.
 
