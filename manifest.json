@@ -8,7 +8,7 @@
   "theme_color": "#2c3e50",
   "orientation": "portrait",
   "scope": "./",
-  "icons": "icon-512.png",
+  "icons":,
   "dir": "auto",
   "lang": "fr"
 }
