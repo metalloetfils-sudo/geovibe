@@ -1,7 +1,21 @@
+const CACHE_NAME = 'geovibe-v1';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-512.png'
+];
+
 self.addEventListener('install', (e) => {
-  self.skipWaiting(); // Force la mise à jour immédiate
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
+  );
 });
 
 self.addEventListener('fetch', (e) => {
-  // Indispensable pour la PWA mais laisse passer les mises à jour
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
+  );
 });
