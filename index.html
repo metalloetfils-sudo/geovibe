@@ -10,101 +10,100 @@
 <link rel="icon" type="image/png" href="logo-512.png">
 <link rel="apple-touch-icon" href="logo-512.png">
 
-    
+   
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    
-    <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio> 
+   
+    <audio id="snd-win" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3" preload="auto"></audio>
 
     <style>
         * { box-sizing: border-box; }
         :root { --primary: #2c3e50; --accent: #e67e22; --bg: #fdfdfd; --star: #f1c40f; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding: 15px; padding-bottom: 80px; font-size: 19px; scroll-behavior: smooth; overflow-x: hidden; width: 100%; }
-        
+       
         .card { background: white; padding: 25px; border-radius: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.06); margin-bottom: 25px; border: 1px solid #eee; position: relative; width: 100%; overflow: hidden;}
         .status-admin { border: 4px solid #ff0000 !important; }
         .status-user { border: 4px solid #0000ff !important; }
-        
+       
         input[type="text"], select { width: 100%; padding: 18px; margin: 10px 0; border-radius: 15px; border: 2px solid #ddd; font-size: 18px; background: white; display: block; }
         .event-banner { background: #ffeb3b; color: #d32f2f; padding: 10px; border-radius: 12px; font-weight: 900; font-size: 17px; margin: 5px 0; border: 2px dashed #ff0000; text-align: center; display: block; position: relative; }
-        
+       
         .admin-btn-container { display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap; }
         .btn-action { flex: 1; padding: 12px; border-radius: 12px; font-weight: bold; border: 2px solid #000; color: white; cursor: pointer; font-size: 13px; min-width: 80px; text-transform: uppercase; }
         .btn-edit { background: #3498db; }
         .btn-del { background: #e74c3c; }
         .btn-share { background: #27ae60; }
-        .btn-event { background: #f39c12; } 
+        .btn-event { background: #f39c12; }
 
         .style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
         .tag-checkbox { padding: 15px; border-radius: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; font-weight: bold; border: 2px solid transparent; text-align: center; filter: saturate(0.5); }
         .tag-checkbox input { display: none; }
         .tag-checkbox.active { border: 3px solid #000 !important; filter: saturate(1.5) !important; transform: scale(1.02); }
-        
+       
         .bg-resto { background-color: #ffebeb; } .bg-karaoke { background-color: #fffceb; } .bg-danse { background-color: #f3ebff; }
         .bg-biere { background-color: #fff4eb; } .bg-vin { background-color: #ffebef; } .bg-calme { background-color: #ebffed; }
         .bg-festif { background-color: #fff9eb; } .bg-terrasse { background-color: #ebf7ff; }
-        
+       
         .vibe-badge { display: inline-block; padding: 5px 12px; border-radius: 10px; font-size: 12px; font-weight: bold; margin-right: 5px; margin-top: 5px; border: 1px solid rgba(0,0,0,0.1); }
         .fav-heart-corner { position: absolute; top: 15px; right: 20px; font-size: 28px; cursor: pointer; color: #ddd; z-index: 10; }
         .fav-heart-corner.active { color: #e74c3c; }
-        
+       
         .btn-go { background: var(--primary); color: white; width: 100%; padding: 20px; border-radius: 15px; font-weight: bold; cursor: pointer; border: none; font-size: 20px; }
         #map { height: 300px; width: 100%; border-radius: 20px; border: 2px solid #ddd; margin: 15px 0; }
-        
+       
         #wheel-container { position: relative; width: 300px; margin: 0 auto; }
         #canvas-roue { width: 300px; height: 300px; border-radius: 50%; border: 6px solid #2c3e50; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); }
-        #wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; } 
+        #wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 30px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; }
 
         .rating-stars { color: #ddd; font-size: 32px; cursor: pointer; display: inline-block; }
         .rating-stars span.active { color: var(--star); }
-        .avg-rating { color: var(--star); font-weight: bold; font-size: 22px; margin-left: 10px; } 
+        .avg-rating { color: var(--star); font-weight: bold; font-size: 22px; margin-left: 10px; }
 
         .popup { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:white; padding:30px 25px; border-radius:40px; width:92%; max-width: 400px; z-index:9999; text-align:center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; }
         #overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9998; backdrop-filter: blur(4px); }
-        
+       
         .gps-btn { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 18px; border-radius: 15px; margin-bottom: 12px; color: white; font-weight: 800; text-decoration: none; font-size: 18px; border: none; cursor: pointer; width: 100%; }
         .bg-google { background: #4D8BF4; } .bg-waze { background: #33CCFF; } .bg-retour { background: #9CAFAD; }
-        
-        #btn-top { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 30px; cursor: pointer; display: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); } 
+       
+        #btn-top { position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; border: none; font-size: 30px; cursor: pointer; display: none; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
 
         .event-edit-row { background: #f9f9f9; padding: 10px; border-radius: 10px; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #ddd; }
-        
+       
         .guide-step { margin-bottom: 25px; padding: 20px; border-left: 6px solid var(--accent); background: #fff; border-radius: 0 20px 20px 0; box-shadow: 2px 2px 15px rgba(0,0,0,0.08); }
         .guide-step h3 { margin-top: 0; color: var(--primary); display: flex; align-items: center; gap: 10px; }
         .example-box { background: #f0f7ff; padding: 15px; border-radius: 12px; border: 1px dashed #3498db; margin-top: 10px; font-size: 16px; }
     </style>
 </head>
-<body> 
+<body>
 
-    <button id="btn-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button> 
+    <button id="btn-top" onclick="window.scrollTo({top:0, behavior:'smooth'})">↑</button>
 
     <div class="top-nav" style="display: flex; gap: 8px; margin-bottom: 15px;">
         <button onclick="window.location.reload(true)" style="flex:1; padding:12px; border-radius:15px; border:2px solid #2c3e50; background:white; font-weight:bold;">🏆 V 2.0.0</button>
         <button onclick="document.getElementById('guide-final').scrollIntoView({behavior:'smooth'})" style="flex:1; padding:12px; border-radius:15px; background:#34495e; color:white; border:none; font-weight:bold;">📖 AIDE</button>
         <button onclick="document.getElementById('form-container').scrollIntoView({behavior:'smooth'})" style="flex:1; padding:12px; border-radius:15px; background:var(--accent); color:white; border:none; font-weight:bold;">➕ AJOUTER</button>
-    </div> 
+    </div>
 
     <div class="card" id="user-status-bar">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <span id="display-username" style="font-weight:900; font-size: 22px;"></span>
             <button onclick="changerNom()" style="padding:10px 20px; border-radius:12px; background:white; border: 2px solid #ddd; font-weight:bold;">IDENTITÉ</button>
         </div>
-    </div> 
-<!-- Bouton de téléchargement simple -->
+    </div>
 <div style="text-align: center; margin-top: 20px;">
     <a href="https://github.com/metalloetfils-sudo/geovibe/releases/download/v2.0.0/aptoide.apk" style="padding: 15px 25px; background-color: #2ea44f; color: white; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
         Télécharger l'APK (Android)
     </a>
 </div>
-    
+   
     <div class="card" style="text-align:center;">
         <h1 style="margin:0;">🌍 GEO-VIBE</h1>
         <div id="map"></div>
         <button class="btn-go" onclick="localiserMoi()">📍 MA POSITION</button>
-    </div> 
+    </div>
 
     <div class="card" style="text-align:center;">
         <h2>🎰 VIBE ROULETTE</h2>
@@ -141,21 +140,20 @@
             <canvas id="canvas-roue" width="300" height="300"></canvas>
         </div>
         <button class="btn-go" onclick="tournerLaRoue()" style="margin-top:15px; background:#e67e22;">LANCER LE DESTIN</button>
-    </div> 
+    </div>
 
     <div class="card" id="form-container">
         <h2 id="form-title">📝 FICHE ÉTABLISSEMENT</h2>
         <input type="hidden" id="edit-id">
         <input type="text" id="in-nom" placeholder="Nom de l'établissement">
-       <!-- EXEMPLE DEMANDÉ DANS LE PLACEHOLDER -->
-        <input type="text" id="in-adr" placeholder="Ex: Rue de Bruxelles, 3, 1020">
+       <input type="text" id="in-adr" placeholder="Ex: Rue de Bruxelles, 3, 1020">
         <div style="text-align:center; margin: 10px 0;">
             <p style="font-weight:bold; margin-bottom:5px;">VOTRE NOTE :</p>
             <div class="rating-stars" id="stars-form">
                 <span data-v="1" onclick="setNoteForm(1)">★</span><span data-v="2" onclick="setNoteForm(2)">★</span><span data-v="3" onclick="setNoteForm(3)">★</span><span data-v="4" onclick="setNoteForm(4)">★</span><span data-v="5" onclick="setNoteForm(5)">★</span>
             </div>
             <input type="hidden" id="in-note" value="0">
-        </div> 
+        </div>
 
         <div id="tag-selector" class="style-grid">
             <label class="tag-checkbox bg-resto"><input type="checkbox" value="Restaurant"> Restaurant</label>
@@ -166,7 +164,7 @@
             <label class="tag-checkbox bg-calme"><input type="checkbox" value="Calme"> Calme</label>
             <label class="tag-checkbox bg-festif"><input type="checkbox" value="Festif"> Festif</label>
             <label class="tag-checkbox bg-terrasse"><input type="checkbox" value="Terrasse"> Terrasse</label>
-        </div> 
+        </div>
 
         <div id="event-manager" style="background: #fff4e5; padding: 15px; border-radius: 15px; margin: 15px 0;">
             <b style="color: #d35400;">🔥 ÉVÉNEMENTS ACTUELS :</b>
@@ -174,26 +172,26 @@
             <input type="text" id="in-new-event" placeholder="Ajouter un événement (ex: Concert 30/03)">
             <button class="btn-action btn-event" style="width:100%;" onclick="ajouterEvInput()">+ AJOUTER L'ÉVÉNEMENT</button>
         </div>
-        
+       
         <button class="btn-go" onclick="sauvegarderLieu()" style="background:#2c3e50;">ENREGISTRER LA FICHE</button>
-    </div> 
+    </div>
 
     <div class="card">
         <h2>🔍 TOUS LES LIEUX</h2>
         <input type="text" id="search-input" placeholder="Recherche..." oninput="afficherListe()">
         <div id="liste-lieux" style="margin-top:20px;"></div>
-    </div> 
+    </div>
 
     <div class="card" id="guide-final" style="border: 3px solid var(--accent); background: #fffcf9;">
         <h2 style="text-align:center;">📖 MODE D'EMPLOI & RÈGLES</h2>
-        
+       
         <div class="guide-step">
             <h3>👤 1. Identité & Connexion</h3>
-            L'application utilise un système de <b>Pseudo + Code Secret</b>. 
+            L'application utilise un système de <b>Pseudo + Code Secret</b>.
             <br>• Sans identité, vous êtes "Visiteur" et ne pouvez que consulter.
             <br>• Une fois identifié, l'app mémorise vos créations. Vos votes et favoris sont liés à votre Pseudo.
             <br><b>Important :</b> Si vous perdez votre code secret, vous ne pourrez plus modifier vos établissements !
-        </div> 
+        </div>
 
         <div class="guide-step">
             <h3>🔥 2. Gestion des Événements</h3>
@@ -207,14 +205,14 @@
                 ✅ <i>"Happy Hour -50% sur les bières"</i> (Expirera demain à la même heure)
             </div>
             <br><b>Tri :</b> Les événements s'affichent du plus récent au plus ancien dans chaque fiche.
-        </div> 
+        </div>
 
         <div class="guide-step">
             <h3>🔐 3. Droits de Modification (Admin vs Utilisateur)</h3>
             <br>• <b>ADMIN (Couronne Rouge) :</b> Il possède un accès total. Il peut modifier ou supprimer n'importe quel établissement ou événement sur la plateforme.
-            <br>• <b>UTILISATEUR (Bordure Bleue) :</b> Vous ne pouvez modifier ou supprimer (Corbeille X) que les établissements que <b>VOUS</b> avez créés. 
+            <br>• <b>UTILISATEUR (Bordure Bleue) :</b> Vous ne pouvez modifier ou supprimer (Corbeille X) que les établissements que <b>VOUS</b> avez créés.
             <br>• <b>TOUS :</b> Tout le monde peut ajouter des événements sur toutes les fiches pour faire vivre la communauté.
-        </div> 
+        </div>
 
         <div class="guide-step">
             <h3>🎰 4. La Roulette Inteligente</h3>
@@ -222,7 +220,7 @@
             <br>1. Choisir un <b>Rayon de distance</b> (ou vos favoris).
             <br>2. Choisir un <b>Style</b> précis (ou "Tous styles").
             <br>La roulette sélectionnera alors au hasard un établissement qui correspond exactement à vos critères.
-        </div> 
+        </div>
 
         <div class="guide-step">
             <h3>⭐️ 5. Notation & Moyenne</h3>
@@ -230,11 +228,11 @@
             <br>• Chaque utilisateur ne peut voter qu'<b>une seule fois</b> par établissement. Changer votre vote remplacera l'ancien.
             <br>• La moyenne (ex: 4.5/5) est calculée en temps réel selon les votes de tous les utilisateurs.
         </div>
-        
+       
         <div style="text-align: center; color: #666; font-style: italic;">
             V 2.0.0 - Geo-Vibe Community
         </div>
-    </div> 
+    </div>
 
     <div id="overlay" onclick="fermerPopup()"></div>
     <div id="popup" class="popup">
@@ -248,58 +246,58 @@
         <a id="link-google" class="gps-btn bg-google" target="_blank">📍 GOOGLE MAPS</a>
         <a id="link-waze" class="gps-btn bg-waze" target="_blank">🚙 WAZE</a>
         <button class="gps-btn bg-retour" onclick="fermerPopup()">FERMER</button>
-    </div> 
+    </div>
 
     <script>
         const firebaseConfig = { apiKey: "AIzaSyCEF_cOo_5aWwH5u2bskZJ8V1_N24S1LeI", authDomain: "geovibe-33dbd.firebaseapp.com", databaseURL: "https://geovibe-33dbd-default-rtdb.europe-west1.firebasedatabase.app", projectId: "geovibe-33dbd", storageBucket: "geovibe-33dbd.firebasestorage.app", messagingSenderId: "421052878353", appId: "1:421052878353:web:92a7d008d00099c884ebb0" };
         firebase.initializeApp(firebaseConfig);
         const dbRef = firebase.database().ref('lieux');
-        
+       
         let monNom = localStorage.getItem('geovibe_user') || "";
         let monPass = localStorage.getItem('geovibe_pass') || "";
         let isAdmin = (monNom === "Alessia01+");
         let dbLieux = [], mesFavoris = JSON.parse(localStorage.getItem('geovibe_favs') || "[]");
         let maPos = { lat: 50.41, lon: 4.44 };
         let rotationActuelle = 0;
-        let tempEvents = []; 
+        let tempEvents = [];
 
-        const vibePills = { "Restaurant": "bg-resto", "Karaoké": "bg-karaoke", "Danser": "bg-danse", "Bière": "bg-biere", "Vin": "bg-vin", "Calme": "bg-calme", "Festif": "bg-festif", "Terrasse": "bg-terrasse" }; 
+        const vibePills = { "Restaurant": "bg-resto", "Karaoké": "bg-karaoke", "Danser": "bg-danse", "Bière": "bg-biere", "Vin": "bg-vin", "Calme": "bg-calme", "Festif": "bg-festif", "Terrasse": "bg-terrasse" };
 
         let map = L.map('map').setView([maPos.lat, maPos.lon], 12);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-        let markersGroup = L.featureGroup().addTo(map); 
+        let markersGroup = L.featureGroup().addTo(map);
 
-        window.onscroll = () => { document.getElementById('btn-top').style.display = window.scrollY > 400 ? 'block' : 'none'; }; 
+        window.onscroll = () => { document.getElementById('btn-top').style.display = window.scrollY > 400 ? 'block' : 'none'; };
 
         window.onload = () => {
             majUI(); localiserMoi(); dessinerRoueInstruction();
             document.querySelectorAll('#tag-selector input').forEach(i => {
                 i.addEventListener('change', () => i.parentElement.classList.toggle('active', i.checked));
             });
-        }; 
+        };
 
         function majUI() {
             const bar = document.getElementById('user-status-bar');
             document.getElementById('display-username').innerText = isAdmin ? "👑 ADMIN" : (monNom ? `👤 ${monNom}` : "👤 VISITEUR");
             bar.className = isAdmin ? "card status-admin" : (monNom ? "card status-user" : "card");
-        } 
+        }
 
         function changerNom() {
             let n = prompt("Pseudo :"); if(!n) return;
             let p = prompt("Code secret :"); if(!p) return;
             localStorage.setItem('geovibe_user', n); localStorage.setItem('geovibe_pass', p); location.reload();
-        } 
+        }
 
         dbRef.on('value', snap => {
             const data = snap.val();
             dbLieux = data ? Object.entries(data).map(([k, v]) => ({...v, fbKey: k})) : [];
             afficherListe(); majRoue();
-        }); 
+        });
 
         function setNoteForm(v) {
             document.getElementById('in-note').value = v;
             document.querySelectorAll('#stars-form span').forEach(s => s.classList.toggle('active', s.dataset.v <= v));
-        } 
+        }
 
         function renderEditEvents() {
             const container = document.getElementById('edit-event-list');
@@ -309,7 +307,7 @@
                     <button class="btn-action btn-del" style="flex:none; padding:5px 10px;" onclick="removeTempEv(${index})">X</button>
                 </div>
             `).join('');
-        } 
+        }
 
         function ajouterEvInput() {
             const val = document.getElementById('in-new-event').value;
@@ -317,18 +315,18 @@
             tempEvents.push({ txt: val, dateAdd: Date.now() });
             document.getElementById('in-new-event').value = "";
             renderEditEvents();
-        } 
+        }
 
-        function removeTempEv(idx) { tempEvents.splice(idx, 1); renderEditEvents(); } 
+        function removeTempEv(idx) { tempEvents.splice(idx, 1); renderEditEvents(); }
 
         async function sauvegarderLieu() {
             if(!monNom) return alert("Identifiez-vous !");
             const id = document.getElementById('edit-id').value;
             const adr = document.getElementById('in-adr').value;
-            
+           
             const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(adr)}`);
             const d = await res.json();
-            if(!d || !d[0]) return alert("Adresse introuvable."); 
+            if(!d || !d[0]) return alert("Adresse introuvable.");
 
             const lieuData = {
                 nom: document.getElementById('in-nom').value,
@@ -337,7 +335,7 @@
                 vibes: Array.from(document.querySelectorAll('#tag-selector input:checked')).map(i=>i.value),
                 events: tempEvents,
                 auteur: monNom, pass: monPass
-            }; 
+            };
 
             if(id) {
                 await dbRef.child(id).update(lieuData);
@@ -349,7 +347,7 @@
                 alert("Créé !");
             }
             location.reload();
-        } 
+        }
 
         function editerLieu(k) {
             const l = dbLieux.find(x => x.fbKey === k);
@@ -363,7 +361,7 @@
                 input.parentElement.classList.toggle('active', input.checked);
             });
             document.getElementById('form-container').scrollIntoView({behavior:'smooth'});
-        } 
+        }
 
         async function voter(k, note) {
             if(!monNom) return alert("Identifiez-vous d'abord !");
@@ -377,35 +375,49 @@
                     document.getElementById('win-avg').innerText = avg + " / 5";
                 }
             });
-        } 
+        }
 
         function afficherListe() {
             const list = document.getElementById('liste-lieux'), search = document.getElementById('search-input').value.toLowerCase();
             list.innerHTML = ""; markersGroup.clearLayers();
-            
-            dbLieux.forEach(l => {
+           
+            // TRI ALPHABÉTIQUE
+            const lieuxTries = [...dbLieux].sort((a, b) => (a.nom || "").localeCompare(b.nom || "", 'fr', { sensitivity: 'base' }));
+
+            lieuxTries.forEach(l => {
                 if(search && !l.nom.toLowerCase().includes(search) && !l.adr.toLowerCase().includes(search)) return;
-                const dist = getDistance(maPos.lat, maPos.lon, l.lat, l.lon);
-                L.marker([l.lat, l.lon]).addTo(markersGroup);
                 
+                L.marker([l.lat, l.lon]).addTo(markersGroup);
+               
                 const canEdit = isAdmin || (l.auteur === monNom && l.pass === monPass);
                 let evHtml = "";
                 if(l.events) {
                     Object.values(l.events).sort((a,b)=>b.dateAdd - a.dateAdd).forEach(e => {
                         evHtml += `<div class="event-banner">🔥 ${e.txt}</div>`;
                     });
-                } 
+                }
 
-                let vibeHtml = (l.vibes || []).map(v => `<span class="vibe-badge ${vibePills[v]}">${v}</span>`).join(''); 
+                let vibeHtml = (l.vibes || []).map(v => `<span class="vibe-badge ${vibePills[v]}">${v}</span>`).join('');
 
                 list.innerHTML += `
                 <div class="card" onclick="ouvrirInfosLieuByKey('${l.fbKey}')">
                     <div class="fav-heart-corner ${mesFavoris.includes(l.fbKey)?'active':''}" onclick="event.stopPropagation(); toggleFav('${l.fbKey}')">❤</div>
-                    <b style="font-size:22px;">${l.nom} <span class="avg-rating">★ ${l.avgRating || '0'}</span></b><br>
-                    <small style="color:#666;">📍 ${l.adr}</small><br>
-                    <div style="margin: 5px 0;">${vibeHtml}</div>
+                    
+                    <div style="display:flex; justify-content:space-between; align-items:start;">
+                        <div style="flex:1; padding-right: 50px;"> <b style="font-size:22px; display:block; margin-bottom:2px;">${l.nom}</b>
+                            <small style="color:#666; display:block;">📍 ${l.adr}</small>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; margin-top: -30px; margin-bottom: 15px;">
+                        <div style="text-align:right;">
+                            <span class="avg-rating" style="display: block;">★ ${l.avgRating || '0'}</span>
+                        </div>
+                    </div>
+
+                    <div style="margin: 10px 0;">${vibeHtml}</div>
                     ${evHtml}
-                    <small>🚗 ${Math.round(dist*10)/10} km</small>
+
                     <div class="admin-btn-container">
                         <button class="btn-action btn-share" onclick="event.stopPropagation(); partagerLieu('${l.fbKey}')">Partager</button>
                         <button class="btn-action btn-event" onclick="event.stopPropagation(); ajouterEvDirect('${l.fbKey}')">Event +</button>
@@ -414,7 +426,7 @@
                     </div>
                 </div>`;
             });
-        } 
+        }
 
         async function ajouterEvDirect(k) {
             const txt = prompt("Nouvel événement ?");
@@ -424,17 +436,17 @@
                 evs.push({ txt, dateAdd: Date.now() });
                 await dbRef.child(k).update({ events: evs });
             }
-        } 
+        }
 
         function ouvrirInfosLieuByKey(k, avecConfettis = false) {
             const l = dbLieux.find(x => x.fbKey === k);
-            document.getElementById('win-nom').innerText = l.nom; 
+            document.getElementById('win-nom').innerText = l.nom;
             document.getElementById('win-region').innerText = l.adr;
             document.getElementById('win-avg').innerText = (l.avgRating || '0') + " / 5";
-            
+           
             const voteId = btoa(monNom + monPass).replace(/=/g, "");
             const userVote = (l.ratings && l.ratings[voteId]) ? l.ratings[voteId] : 0;
-            
+           
             const stars = document.querySelectorAll('#win-stars-interactive span');
             stars.forEach(s => {
                 const v = parseInt(s.dataset.v);
@@ -451,13 +463,13 @@
                     evList.innerHTML += `<div class="event-banner">🔥 ${e.txt}</div>`;
                 });
             }
-            
-            document.getElementById('link-google').href = `https://www.google.com/maps/search/?api=1&query=${l.lat},${l.lon}`;
+           
+            document.getElementById('link-google').href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.nom + ' ' + l.adr)}`;
             document.getElementById('link-waze').href = `https://waze.com/ul?ll=${l.lat},${l.lon}&navigate=yes`;
-            document.getElementById('popup').style.display='block'; document.getElementById('overlay').style.display='block'; 
+            document.getElementById('popup').style.display='block'; document.getElementById('overlay').style.display='block';
 
             if(avecConfettis) { document.getElementById('snd-win').play(); confetti({ particleCount: 200, zIndex: 10000 }); }
-        } 
+        }
 
         function dessinerRoueInstruction() {
             const canvas = document.getElementById('canvas-roue'), ctx = canvas.getContext('2d');
@@ -467,7 +479,7 @@
             ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(150,150,140,0,Math.PI*2); ctx.fill();
             ctx.fillStyle = "#d35400"; ctx.font = "bold 20px Segoe UI"; ctx.textAlign = "center";
             ctx.fillText("CHOISISSEZ", 150, 130); ctx.fillText("DISTANCE & STYLE", 150, 160);
-        } 
+        }
 
         function majRoue() {
             const d = document.getElementById('wheel-dist').value, s = document.getElementById('wheel-style').value;
@@ -478,7 +490,7 @@
                 return getDistance(maPos.lat, maPos.lon, l.lat, l.lon) <= parseFloat(d) && st;
             });
             dessinerRoue(list);
-        } 
+        }
 
         function dessinerRoue(lieux) {
             const canvas = document.getElementById('canvas-roue'), ctx = canvas.getContext('2d');
@@ -492,7 +504,7 @@
                 ctx.fillStyle = "white"; ctx.font = "bold 11px Arial"; ctx.textAlign = "right";
                 ctx.fillText(l.nom.substring(0,14), 130, 5); ctx.restore();
             });
-        } 
+        }
 
         function tournerLaRoue() {
             const d = document.getElementById('wheel-dist').value, s = document.getElementById('wheel-style').value;
@@ -503,40 +515,36 @@
                 return getDistance(maPos.lat, maPos.lon, l.lat, l.lon) <= parseFloat(d) && st;
             });
             if(!list.length) return alert("Rien à faire tourner !");
-            rotationActuelle += (360 * 5) + Math.floor(Math.random() * 360); 
+            rotationActuelle += (360 * 5) + Math.floor(Math.random() * 360);
             document.getElementById('canvas-roue').style.transform = `rotate(${rotationActuelle}deg)`;
             setTimeout(() => {
                 const angle = rotationActuelle % 360;
                 const index = Math.floor(((360 - angle + 270) % 360) / (360 / list.length));
                 ouvrirInfosLieuByKey(list[index % list.length].fbKey, true);
             }, 4100);
-        } 
+        }
 
-        function getDistance(lat1, lon1, lat2, lon2) { 
-            const R = 6371; const dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180; 
-            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2; 
-            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; const dLat = (lat2-lat1)*Math.PI/180, dLon = (lon2-lon1)*Math.PI/180;
+            const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
         }
         function localiserMoi() { navigator.geolocation.getCurrentPosition(p => { maPos = { lat: p.coords.latitude, lon: p.coords.longitude }; map.setView([maPos.lat, maPos.lon], 14); afficherListe(); }); }
         function fermerPopup() { document.getElementById('popup').style.display='none'; document.getElementById('overlay').style.display='none'; }
         function toggleFav(k) { const i = mesFavoris.indexOf(k); if(i>-1) mesFavoris.splice(i,1); else mesFavoris.push(k); localStorage.setItem('geovibe_favs', JSON.stringify(mesFavoris)); afficherListe(); }
-        
-        function partagerLieu(k) { 
-            const l = dbLieux.find(x => x.fbKey === k); 
-            const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.nom + " " + l.adr)}`;
-            const t = `📍 Découvre "${l.nom}" sur Geo-Vibe !\n${l.adr}`; 
+       
+        function partagerLieu(k) {
+            const l = dbLieux.find(x => x.fbKey === k);
+            const shareUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.nom + ' ' + l.adr)}`;
+            const t = `📍 Découvre "${l.nom}" sur Geo-Vibe !\n${l.adr}`;
 
             if (navigator.share) {
-                navigator.share({ 
-                    title: l.nom, 
-                    text: t, 
-                    url: googleMapsUrl 
-                }).catch(console.error);
-            } else { 
-                prompt("Copiez le lien de l'établissement :", googleMapsUrl); 
-            } 
+                navigator.share({ title: l.nom, text: t, url: shareUrl }).catch(console.error);
+            } else {
+                prompt("Copiez le lien de l'établissement :", shareUrl);
+            }
         }
-        
+       
         function supprimerLieu(k) { if(confirm("Supprimer ?")) dbRef.child(k).remove(); }
     </script>
 <script>
